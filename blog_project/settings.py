@@ -157,6 +157,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://blogfrontend-ochre.vercel.app"
 ]
 
 MEDIA_URL = '/media/'
