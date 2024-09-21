@@ -94,12 +94,29 @@ WSGI_APPLICATION = 'blog_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+'''
+
+#  postgresql://postgres:IkvLteZnbLYtDmFBVsYOeJiPdLKOOGwd@autorack.proxy.rlwy.net:50962/railway
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'IkvLteZnbLYtDmFBVsYOeJiPdLKOOGwd',
+        'HOST': 'autorack.proxy.rlwy.net',  # or your database host
+        'PORT': '50962',
+    }
+}
+
+
 
 
 # Password validation
