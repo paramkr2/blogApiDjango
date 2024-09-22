@@ -17,15 +17,17 @@ class PostSerializer(serializers.ModelSerializer):
         # Parse the content using BeautifulSoup
         soup = BeautifulSoup(obj.content, 'html.parser')
 
-        # Remove unwanted tags (e.g., image, iframe, codeblock)
+        # Remove unwanted tags (e.g., img, iframe, pre)
         for tag in soup.findAll(['img', 'iframe', 'pre']):
             tag.decompose()
 
-        # Extract the text, preserving newlines
-        cleaned_text = soup.get_text(separator='\n', strip=True)
+        # Convert the modified soup object back to a string (preserving tags)
+        cleaned_html = str(soup)  # or soup.prettify() if you want indented formatting
 
-        # Truncate the text to the desired length
-        return cleaned_text  # Adjust the length as needed
+        # Optional: Truncate the HTML string to the desired length (e.g., 300 characters)
+        return cleaned_html
+
+    
 
     def get_image(self, obj):
         soup = BeautifulSoup(obj.content, 'html.parser')
