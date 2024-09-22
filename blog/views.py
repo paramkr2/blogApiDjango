@@ -49,11 +49,7 @@ class PostListCreateView(generics.ListCreateAPIView):
         post = serializer.instance
         # Reverse the URL for the newly created post
         new_path = reverse('post-detail', kwargs={'pk': post.pk}, request=request)
-        return Response({
-            'path': new_path,
-            'update_path': reverse('post-detail', kwargs={'pk': post.pk}, request=request),
-            'delete_path': reverse('post-detail', kwargs={'pk': post.pk}, request=request),
-        }, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
