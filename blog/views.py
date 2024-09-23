@@ -20,15 +20,9 @@ class PostListCreateView(generics.ListCreateAPIView):
 
         if post_type == 'draft':
             if user.is_authenticated:
-                # Return only user's drafts
-                queryset = Post.objects.filter(author=user, is_published=False).order_by('-created_at')
+                queryset = Post.objects.filter( is_published=False).order_by('-created_at')
         elif post_type == 'published':
-            if user.is_authenticated:
-                # Return all published posts, including user's drafts
-                queryset = Post.objects.filter(is_published=True).order_by('-created_at')
-            else:
-                # Return only published posts for non-authenticated users
-                queryset = Post.objects.filter(is_published=True).order_by('-created_at')
+            queryset = Post.objects.filter(is_published=True).order_by('-created_at')
         else:
             if user.is_authenticated:
                 # Return both published posts and user's drafts
