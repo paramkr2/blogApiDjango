@@ -101,3 +101,42 @@ class ImageUploadView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+import requests
+
+class ImgurUploadView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        image = request.FILES.get('image')
+
+        # Get access token from Imgur (OAuth2 Client Credentials Flow)
+        auth_response = requests.post('https://api.imgur.com/oauth2/token', data={
+            'client_id': '8713ed59d0f26e1',
+            'client_secret': '666ab954388b03d7f99e132f314ed4aac683b348',
+            'grant_type': 'client_credentials',
+        })
+
+        if auth_response.status_code != 200:
+            return Response({'error': 'Imgur authentication failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        access_token = auth_response.json().get('access_token')
+
+        # Upload image to Imgur
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+        }
+        files = {
+            'image': image,
+        }
+        upload_response = requests.post('https://api.imgur.com/3/image', headers=headers, files=files)
+
+        if upload_response.status_code != 200:
+            return Response({'error': 'Image upload failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        imgur_data = upload_response.json()['data']
+        image_url = imgur_data['link']
+        print('In imgur upload view',image_url)
+
+        # Return the image URL to the frontend
+        return Response({'image': image_url}, status=status.HTTP_201_CREATED)

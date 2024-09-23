@@ -1,5 +1,5 @@
 from django.urls import path 
-from .views import PostListCreateView, PostDetailView , PostDraftView , PostPublishView
+from .views import PostListCreateView, PostDetailView , PostDraftView , PostPublishView 
 
 urlpatterns = [
 	path('posts/', PostListCreateView.as_view(), name='post-list-create' ),
@@ -21,8 +21,9 @@ urlpatterns += [
 
 
 
-from .views import ImageUploadView
+from .views import ImageUploadView , ImgurUploadView
 
 urlpatterns += [
     path('images/', ImageUploadView.as_view(), name='image-upload'),
+    path('imgur/',ImgurUploadView.as_view(),name='imgur-upload'),
 ]
