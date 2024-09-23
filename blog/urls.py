@@ -21,9 +21,9 @@ urlpatterns += [
 
 
 
-from .views import ImageUploadView , ImgurUploadView
+from .views import ImageUploadView , FirebaseImageUploadView
 
 urlpatterns += [
     path('images/', ImageUploadView.as_view(), name='image-upload'),
-    path('imgur/',ImgurUploadView.as_view(),name='imgur-upload'),
+    path('firebase/images/',FirebaseImageUploadView.as_view(),name='firebaseImage-upload'),
 ]

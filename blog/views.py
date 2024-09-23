@@ -102,41 +102,32 @@ class ImageUploadView(generics.CreateAPIView):
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-import requests
 
-class ImgurUploadView(generics.CreateAPIView):
+from django.views.decorators.csrf import csrf_exempt
+from firebase_admin import storage
+import uuid
+
+  
+class FirebaseImageUploadView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
-
     def post(self, request, *args, **kwargs):
-        image = request.FILES.get('image')
+        # Check if the request contains a file
+        if 'image' not in request.FILES:
+            return Response({'error': 'No image provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Get access token from Imgur (OAuth2 Client Credentials Flow)
-        auth_response = requests.post('https://api.imgur.com/oauth2/token', data={
-            'client_id': '8713ed59d0f26e1',
-            'client_secret': '666ab954388b03d7f99e132f314ed4aac683b348',
-            'grant_type': 'client_credentials',
-        })
+        image = request.FILES['image']
+        
+        # Generate a unique filename
+        unique_filename = f"{uuid.uuid4()}.jpg"
 
-        if auth_response.status_code != 200:
-            return Response({'error': 'Imgur authentication failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # Get a reference to the storage bucket
+        bucket = storage.bucket()
+        blob = bucket.blob(unique_filename)
 
-        access_token = auth_response.json().get('access_token')
+        # Upload the image to Firebase Storage
+        blob.upload_from_file(image.file, content_type=image.content_type)
+        
+        # Make the file publicly accessible
+        blob.make_public()
 
-        # Upload image to Imgur
-        headers = {
-            'Authorization': f'Bearer {access_token}',
-        }
-        files = {
-            'image': image,
-        }
-        upload_response = requests.post('https://api.imgur.com/3/image', headers=headers, files=files)
-
-        if upload_response.status_code != 200:
-            return Response({'error': 'Image upload failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        imgur_data = upload_response.json()['data']
-        image_url = imgur_data['link']
-        print('In imgur upload view',image_url)
-
-        # Return the image URL to the frontend
-        return Response({'image': image_url}, status=status.HTTP_201_CREATED)
+        return Response({'image': blob.public_url}, status=status.HTTP_201_CREATED)

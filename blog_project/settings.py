@@ -183,3 +183,15 @@ CSRF_TRUSTED_ORIGINS = ['https://djangoblogapi-production.up.railway.app']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+
+import firebase_admin
+from firebase_admin import credentials
+
+# Path to your Firebase credentials
+firebase_credentials_path = os.path.join(BASE_DIR, 'firebase.json')
+
+# Initialize Firebase Admin
+cred = credentials.Certificate(firebase_credentials_path)
+firebase_admin.initialize_app(cred,{"storageBucket":"blogdjangoapi.appspot.com"})
