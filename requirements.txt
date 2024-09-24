@@ -10,6 +10,7 @@ Django==5.1
 django-cors-headers==4.4.0
 djangorestframework==3.15.2
 djangorestframework-simplejwt==5.3.1
+drf-yasg==1.21.7
 firebase-admin==6.5.0
 google-api-core==2.20.0
 google-api-python-client==2.146.0
@@ -26,6 +27,7 @@ grpcio-status==1.66.1
 gunicorn==23.0.0
 httplib2==0.22.0
 idna==3.10
+inflection==0.5.1
 msgpack==1.1.0
 packaging==24.1
 pillow==10.4.0
@@ -37,6 +39,8 @@ pyasn1_modules==0.4.1
 pycparser==2.22
 PyJWT==2.9.0
 pyparsing==3.1.4
+pytz==2024.2
+PyYAML==6.0.2
 requests==2.32.3
 rsa==4.9
 soupsieve==2.6
