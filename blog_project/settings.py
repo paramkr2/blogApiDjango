@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'blog',
+    "drf_yasg",
 ]
 
 REST_FRAMEWORK = {

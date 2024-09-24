@@ -27,3 +27,5 @@ urlpatterns += [
     path('images/', ImageUploadView.as_view(), name='image-upload'),
     path('firebase/images/',FirebaseImageUploadView.as_view(),name='firebaseImage-upload'),
 ]
+
+
