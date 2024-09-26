@@ -178,7 +178,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
     "https://blogfrontend-ochre.vercel.app",
-    "https://djangoblogapi-production.up.railway.app"
+    "https://djangoblogapi-production.up.railway.app",
+    "https://blogfrontendnextjs.vercel.app"
 ]
 
 CSRF_TRUSTED_ORIGINS = ['https://djangoblogapi-production.up.railway.app']
