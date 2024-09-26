@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'blog',
     "drf_yasg",
+    'django_extensions',
 ]
 
 REST_FRAMEWORK = {
@@ -174,6 +175,7 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
     "http://localhost:5173",
     "https://blogfrontend-ochre.vercel.app",
     "https://djangoblogapi-production.up.railway.app"
@@ -196,3 +198,8 @@ firebase_credentials_path = os.path.join(BASE_DIR, 'firebase.json')
 # Initialize Firebase Admin
 cred = credentials.Certificate(firebase_credentials_path)
 firebase_admin.initialize_app(cred,{"storageBucket":"blogdjangoapi.appspot.com"})
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
