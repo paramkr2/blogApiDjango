@@ -7,6 +7,8 @@ class PostSerializer(serializers.ModelSerializer):
     
     truncated_content = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
+    author_fullname = serializers.SerializerMethodField()
+    author_image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
@@ -32,6 +34,15 @@ class PostSerializer(serializers.ModelSerializer):
         soup = BeautifulSoup(obj.content, 'html.parser')
         first_image = soup.find('img')  # Find the first <img> tag
         return first_image['src'] if first_image and 'src' in first_image.attrs else None  
+
+    def get_author_fullname(self, obj):
+        profile = Profile.objects.get(user=obj.author) 
+        return profile.fullname
+
+    def get_author_image_url(self, obj):
+        profile = Profile.objects.get(user=obj.author)
+        return profile.image_url
+
 
 class ImageUploadSerializer(serializers.ModelSerializer):
     class Meta:
