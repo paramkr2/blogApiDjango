@@ -23,3 +23,13 @@ class ImageUpload(models.Model):
     def __str__(self):
         return self.image.url
 
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    fullname = models.CharField(max_length=255, blank=True)
+    image_url = models.URLField(max_length=500, blank=True)  # Store the Firebase URL here
+
+    def __str__(self):
+        return self.user.username
+
+
+

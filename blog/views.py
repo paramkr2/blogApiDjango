@@ -2,41 +2,47 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.permissions import IsAuthenticatedOrReadOnly , IsAuthenticated
-from .models import Post
-from .serializers import PostSerializer
+from .models import Post,Profile
+from .serializers import PostSerializer,ProfileSerializer
 from .pagination import PostPagination
+from django.shortcuts import get_object_or_404
 
+class IsOwnerOrReadOnly(IsAuthenticatedOrReadOnly):
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed for any request,
+        # so we'll always allow GET requests
+        if request.method in ['GET']:
+            return True
+        # Write permissions are only allowed to the owner of the post
+        return obj.author == request.user
 
 class PostListCreateView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
     serializer_class = PostSerializer
     pagination_class = PostPagination
 
-    
     def get_queryset(self):
         user = self.request.user
         post_type = self.request.query_params.get('type')  # Get 'type' query param
         queryset = Post.objects.none()  # Start with an empty queryset
 
-        if post_type == 'draft':
-            if user.is_authenticated:
-                queryset = Post.objects.filter( is_published=False).order_by('-created_at')
-        elif post_type == 'published':
-            queryset = Post.objects.filter(is_published=True).order_by('-created_at')
-        else:
-            if user.is_authenticated:
-                # Return both published posts and user's drafts
-                queryset = Post.objects.filter(author=user).order_by('-created_at') 
+        if user.is_authenticated:
+            if post_type == 'draft':
+                queryset = Post.objects.filter(author=user, is_published=False).order_by('-created_at')
+            elif post_type == 'published':
+                queryset = Post.objects.filter(author=user, is_published=True).order_by('-created_at')
             else:
-                # Return only published posts for unauthenticated users
-                queryset = Post.objects.filter(is_published=True).order_by('-created_at')
+                # Return both published posts and user's drafts
+                queryset = Post.objects.filter(author=user).order_by('-created_at')
+        else:
+            # Return only published posts for unauthenticated users
+            queryset = Post.objects.filter(is_published=True).order_by('-created_at')
 
         return queryset
-        
+
     def create(self, request, *args, **kwargs):
         data = request.data.copy()  # Copy the request data to modify it
         data['author'] = request.user.pk  # Set the author field to the logged-in user's ID
-        print(self.request.user.pk)  # Debugging print statement to check user ID
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -125,3 +131,50 @@ class FirebaseImageUploadView(generics.CreateAPIView):
         blob.make_public()
 
         return Response({'image': blob.public_url}, status=status.HTTP_201_CREATED)
+
+
+
+class ProfileDetailUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self):
+        user_identifier = self.kwargs.get('user_identifier')
+
+        if user_identifier:
+            # Fetch the user based on primary key or username
+            if user_identifier.isdigit():
+                user_profile = get_object_or_404(Profile, user__id=user_identifier)
+            else:
+                user_profile = get_object_or_404(Profile, user__username=user_identifier)
+        else:
+            # If no user_identifier is provided, return the authenticated user's profile
+            return self.request.user.profile
+
+        return user_profile
+
+    def update(self, request, *args, **kwargs):
+        profile = self.get_object()
+        old_image_url = profile.image_url
+
+        # Handle the image upload to Firebase if an image is provided
+        if 'image' in request.FILES:
+            image = request.FILES['image']
+            # Use your Firebase upload logic here
+            unique_filename = f"{uuid.uuid4()}.jpg"
+            bucket = storage.bucket()
+            blob = bucket.blob(unique_filename)
+            blob.upload_from_file(image.file, content_type=image.content_type)
+            blob.make_public()
+            new_image_url = blob.public_url
+
+            # Update the profile with the new image URL
+            profile.image_url = new_image_url
+
+            # Delete the old image from Firebase if it exists
+            if old_image_url:
+                old_blob = bucket.blob(old_image_url.split('/')[-1])
+                old_blob.delete()
+
+        # Proceed with updating the rest of the profile (e.g., fullname)
+        return super().update(request, *args, **kwargs)

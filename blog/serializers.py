@@ -1,7 +1,6 @@
 # blog/serializers.py
 from rest_framework import serializers
-from .models import Post
-from .models import ImageUpload
+from .models import Post,Profile,ImageUpload
 from bs4 import BeautifulSoup
 
 class PostSerializer(serializers.ModelSerializer):
@@ -38,3 +37,10 @@ class ImageUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImageUpload
         fields = ['image']
+
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['fullname', 'image_url'] 

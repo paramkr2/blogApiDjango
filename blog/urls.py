@@ -29,3 +29,9 @@ urlpatterns += [
 ]
 
 
+from .views import ProfileDetailUpdateView
+
+urlpatterns += [
+    path('profile/', ProfileDetailUpdateView.as_view(), name='profile-detail-update'),
+    path('profile/<str:user_identifier>/', ProfileDetailUpdateView.as_view(), name='profile-detail-update-by-identifier'),
+]
