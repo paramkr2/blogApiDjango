@@ -6,6 +6,8 @@ from .models import Post,Profile,Query
 from .serializers import PostSerializer,ProfileSerializer,QuerySerializer
 from .pagination import PostPagination
 from django.shortcuts import get_object_or_404
+from .utils import resize_image
+
 
 class IsOwnerOrReadOnly(IsAuthenticatedOrReadOnly):
     def has_object_permission(self, request, view, obj):
@@ -134,6 +136,8 @@ class FirebaseImageUploadView(generics.CreateAPIView):
         return Response({'image': blob.public_url}, status=status.HTTP_201_CREATED)
 
 
+
+
 class ProfileDetailUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -160,11 +164,12 @@ class ProfileDetailUpdateView(generics.RetrieveUpdateAPIView):
         # Handle the image upload to Firebase if an image is provided
         if 'image' in request.FILES:
             image = request.FILES['image']
-            # Use your Firebase upload logic here
+            # Resize the image
+            resized_image = resize_image(image)
             unique_filename = f"{uuid.uuid4()}.jpg"
             bucket = storage.bucket()
             blob = bucket.blob(unique_filename)
-            blob.upload_from_file(image.file, content_type=image.content_type)
+            blob.upload_from_file(resized_image, content_type=image.content_type)
             blob.make_public()
             new_image_url = blob.public_url
 
@@ -178,7 +183,6 @@ class ProfileDetailUpdateView(generics.RetrieveUpdateAPIView):
 
         # Proceed with updating the rest of the profile (e.g., fullname)
         return super().update(request, *args, **kwargs)
-
 
 
 
@@ -228,7 +232,7 @@ class UpdateDeleteQueryView(generics.GenericAPIView):
             query.done = update_data.get('done', query.done)
         if 'starred' in update_data:
             query.starred = update_data.get('starred',query.starred);
-        
+
         # Add more fields here if you want to update other fields in the future
 
         query.save()  # Save the updated query object
