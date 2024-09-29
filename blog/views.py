@@ -1,9 +1,9 @@
 from rest_framework import generics, status 
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from rest_framework.permissions import IsAuthenticatedOrReadOnly , IsAuthenticated
-from .models import Post,Profile
-from .serializers import PostSerializer,ProfileSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly , IsAuthenticated,IsAdminUser
+from .models import Post,Profile,Query
+from .serializers import PostSerializer,ProfileSerializer,QuerySerializer
 from .pagination import PostPagination
 from django.shortcuts import get_object_or_404
 
@@ -134,7 +134,6 @@ class FirebaseImageUploadView(generics.CreateAPIView):
         return Response({'image': blob.public_url}, status=status.HTTP_201_CREATED)
 
 
-
 class ProfileDetailUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
@@ -179,3 +178,18 @@ class ProfileDetailUpdateView(generics.RetrieveUpdateAPIView):
 
         # Proceed with updating the rest of the profile (e.g., fullname)
         return super().update(request, *args, **kwargs)
+
+
+
+
+class QueryCreateView(generics.CreateAPIView):
+    queryset = Query.objects.all()
+    serializer_class = QuerySerializer
+    permission_classes = []  # No authentication needed for POST requests
+
+
+class QueryListView(generics.ListAPIView):
+    pagination_class = PostPagination
+    queryset = Query.objects.all()
+    serializer_class = QuerySerializer
+    permission_classes = [IsAdminUser]  # Only admin/staff can view the list

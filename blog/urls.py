@@ -35,3 +35,11 @@ urlpatterns += [
     path('profile/', ProfileDetailUpdateView.as_view(), name='profile-detail-update'),
     path('profile/<str:user_identifier>/', ProfileDetailUpdateView.as_view(), name='profile-detail-update-by-identifier'),
 ]
+
+
+from .views import QueryCreateView, QueryListView
+
+urlpatterns  += [
+    path('contact-us/', QueryCreateView.as_view(), name='contact-us'),
+    path('queries/', QueryListView.as_view(), name='queries'),
+]

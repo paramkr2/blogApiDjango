@@ -1,6 +1,6 @@
 # blog/serializers.py
 from rest_framework import serializers
-from .models import Post,Profile,ImageUpload
+from .models import Post,Profile,ImageUpload,Query
 from bs4 import BeautifulSoup
 
 class PostSerializer(serializers.ModelSerializer):
@@ -55,3 +55,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['fullname', 'image_url'] 
+
+
+class QuerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Query
+        fields = ['id', 'name', 'email', 'message', 'created_at']
