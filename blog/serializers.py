@@ -60,4 +60,4 @@ class ProfileSerializer(serializers.ModelSerializer):
 class QuerySerializer(serializers.ModelSerializer):
     class Meta:
         model = Query
-        fields = ['id', 'name', 'email', 'message', 'created_at']
+        fields = '__all__'

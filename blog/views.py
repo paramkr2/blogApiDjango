@@ -188,8 +188,53 @@ class QueryCreateView(generics.CreateAPIView):
     permission_classes = []  # No authentication needed for POST requests
 
 
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+
 class QueryListView(generics.ListAPIView):
     pagination_class = PostPagination
+    queryset = Query.objects.all().order_by('-created_at')
+    serializer_class = QuerySerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    search_fields = ['name', 'email', 'message']  # Allows search in these fields
+    filterset_fields = ['done','starred']  # Allows filtering by 'done'
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        # Example of adding custom filters using query params
+        done_param = self.request.query_params.get('done')
+        if done_param is not None:
+            queryset = queryset.filter(done=done_param.lower() == 'true')
+
+        return queryset
+
+
+
+
+class UpdateDeleteQueryView(generics.GenericAPIView):
     queryset = Query.objects.all()
     serializer_class = QuerySerializer
-    permission_classes = [IsAdminUser]  # Only admin/staff can view the list
+    permission_classes = [IsAdminUser]  # Only admins can modify
+
+    def patch(self, request, *args, **kwargs):
+        query = self.get_object()  # Get the specific query instance
+        update_data = request.data  # The JSON body from the request
+
+        # Check for the 'done' field in the request and update if present
+        if 'done' in update_data:
+            query.done = update_data.get('done', query.done)
+        if 'starred' in update_data:
+            query.starred = update_data.get('starred',query.starred);
+        
+        # Add more fields here if you want to update other fields in the future
+
+        query.save()  # Save the updated query object
+        return Response({'message': 'Query updated successfully'}, status=status.HTTP_200_OK)
+
+    def delete(self, request, *args, **kwargs):
+        query = self.get_object()  # Get the specific query instance
+        query.delete()  # Delete the query from the database
+        return Response({'message': 'Query deleted successfully'}, status=status.HTTP_204_NO_CONTENT)

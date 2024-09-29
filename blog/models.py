@@ -38,6 +38,10 @@ class Query(models.Model):
     email = models.EmailField()
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    done = models.BooleanField(default=False)
+    starred = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
+
+

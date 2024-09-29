@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'blog',
     "drf_yasg",
     'django_extensions',
+    'django_filters',
 ]
 
 REST_FRAMEWORK = {

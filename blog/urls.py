@@ -20,7 +20,6 @@ urlpatterns += [
 ]
 
 
-
 from .views import ImageUploadView , FirebaseImageUploadView
 
 urlpatterns += [
@@ -37,9 +36,11 @@ urlpatterns += [
 ]
 
 
-from .views import QueryCreateView, QueryListView
+from .views import QueryCreateView, QueryListView,UpdateDeleteQueryView
 
 urlpatterns  += [
     path('contact-us/', QueryCreateView.as_view(), name='contact-us'),
     path('queries/', QueryListView.as_view(), name='queries'),
+    path('queries/<int:pk>/', UpdateDeleteQueryView.as_view(), name='update-done-status'),
 ]
+
