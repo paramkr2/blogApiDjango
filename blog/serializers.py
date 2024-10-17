@@ -29,7 +29,6 @@ class PostSerializer(serializers.ModelSerializer):
         return cleaned_html
 
     
-
     def get_image(self, obj):
         soup = BeautifulSoup(obj.content, 'html.parser')
         first_image = soup.find('img')  # Find the first <img> tag
