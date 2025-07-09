@@ -106,16 +106,18 @@ DATABASES = {
 }
 '''
 
-#  postgresql://postgres:IkvLteZnbLYtDmFBVsYOeJiPdLKOOGwd@autorack.proxy.rlwy.net:50962/railway
+
+# postgresql://postgres:heHlwFjdMckkjcapXhbIiiCAJlQsfhTW@nozomi.proxy.rlwy.net:40335/railway
+
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'railway',
         'USER': 'postgres',
-        'PASSWORD': 'IkvLteZnbLYtDmFBVsYOeJiPdLKOOGwd',
-        'HOST': 'autorack.proxy.rlwy.net',  # or your database host
-        'PORT': '50962',
+        'PASSWORD': 'heHlwFjdMckkjcapXhbIiiCAJlQsfhTW',
+        'HOST': 'nozomi.proxy.rlwy.net',  # or your database host
+        'PORT': '40335',
     }
 }
 
@@ -179,11 +181,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
     "https://blogfrontend-ochre.vercel.app",
-    "https://djangoblogapi-production.up.railway.app",
+    "https://web-production-d1cc2.up.railway.app",
     "https://blogfrontendnextjs.vercel.app"
 ]
 
-CSRF_TRUSTED_ORIGINS = ['https://djangoblogapi-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://web-production-d1cc2.up.railway.app']
 
 
 MEDIA_URL = '/media/'
