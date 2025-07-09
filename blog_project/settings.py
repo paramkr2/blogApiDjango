@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-@p7y()613#@$&0*v9s4f1ubutcgpx59-qm48)suash=p-bc2xj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['djangoblogapi-production.up.railway.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['web-production-d1cc2.up.railway.app', 'localhost', '127.0.0.1']
 
 
 
