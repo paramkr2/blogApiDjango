@@ -107,7 +107,7 @@ DATABASES = {
 '''
 
 
-# postgresql://postgres:heHlwFjdMckkjcapXhbIiiCAJlQsfhTW@nozomi.proxy.rlwy.net:40335/railway
+# postgresql://postgres:rSbOaEKhmWlWLUxqeDickizYnwraAcDd@interchange.proxy.rlwy.net:45745/railway
 
 
 DATABASES = {
@@ -115,9 +115,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'railway',
         'USER': 'postgres',
-        'PASSWORD': 'heHlwFjdMckkjcapXhbIiiCAJlQsfhTW',
-        'HOST': 'nozomi.proxy.rlwy.net',  # or your database host
-        'PORT': '40335',
+        'PASSWORD': 'rSbOaEKhmWlWLUxqeDickizYnwraAcDd',
+        'HOST': 'interchange.proxy.rlwy.net',  # or your database host
+        'PORT': '45745',
     }
 }
 
